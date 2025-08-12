@@ -17,8 +17,7 @@ struct ToDoItems: Identifiable {
     @State private var itemLists: [ToDoItems] = [
         ToDoItems(itemText: "Learn Swift", isCompleted: true),
         ToDoItems(itemText: "Build new app 'To-Do List'", isCompleted: false),
-        ToDoItems(itemText: "Get an offer with job", isCompleted: false),
-        ToDoItems(itemText: "Leave Walmart", isCompleted: false)
+        ToDoItems(itemText: "Improve the new amazing app!", isCompleted: false)
     ]
     
     @State private var itemAddText: String = ""
@@ -46,11 +45,18 @@ struct ToDoItems: Identifiable {
                 List {
                     ForEach($itemLists) { $items in
                         HStack {
-                            Image(systemName: items.isCompleted ? "checkmark.circle.fill" : "checkmark.circle")
-                                .foregroundStyle(items.isCompleted ? .green : .black)
-                                .font(.system(size: 24))
-                            Text(items.itemText)
-                                .bold(items.isCompleted)
+                            
+                            Button {
+                                items.isCompleted.toggle()
+                            } label: {
+                                Image(systemName: items.isCompleted ? "checkmark.circle.fill" : "checkmark.circle")
+                                    .foregroundStyle(items.isCompleted ? .green : .black)
+                                    .font(.system(size: 24))
+                                Text(items.itemText)
+                                    .bold(items.isCompleted)
+                            }.buttonStyle(.plain)
+
+                            
                         }.padding(6)
                     }.onDelete(perform: deleteItemText)
                 }
