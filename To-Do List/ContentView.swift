@@ -33,6 +33,7 @@ struct ToDoItems: Identifiable {
         itemLists.remove(atOffsets: offsets)
     }
     
+    // This is function is toggle that button will be changed to 'Completed(true)' or 'Not completed(false) in bool'.
     func toggleCompletion(for item: ToDoItems) {
         if let index = itemLists.firstIndex(where: { $0.id == item.id }) {
             itemLists[index].isCompleted.toggle()
