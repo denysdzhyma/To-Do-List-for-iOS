@@ -7,7 +7,25 @@
 
 import SwiftUI
 
+
+
 struct ContentView: View {
+    
+    struct TodoDetailView: View {
+        let item: ToDoItems
+        var body: some View {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(item.itemText)
+                    .font(.largeTitle)
+                Text("Status: \(item.isCompleted ? "Completed" : "Not Completed")")
+                    .font(.headline)
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Task Details")
+        }
+    }
+
     
 struct ToDoItems: Identifiable {
     let id = UUID()
@@ -45,9 +63,8 @@ struct ToDoItems: Identifiable {
             VStack {
                 List {
                     ForEach($itemLists) { $items in
-                        Button {
-                            items.isCompleted.toggle()
-                        } label: {
+                        
+                        NavigationLink(destination: TodoDetailView(item: items)) {
                             VStack.init(alignment: .leading) {
                                 Text(items.itemText)
                                 Text(items.isCompleted ? "Mark as not completed" : "Mark as completed")
@@ -56,9 +73,11 @@ struct ToDoItems: Identifiable {
                                     .background(items.isCompleted ? .red : .green)
                                     .foregroundStyle(.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    .onTapGesture {
+                                        items.isCompleted.toggle()
+                                    }
                             }
-                        }.buttonStyle(.plain)
-                        .padding(6)
+                        }
                     }.onDelete(perform: deleteItemText)
                 }
                 HStack {
