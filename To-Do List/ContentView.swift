@@ -44,24 +44,22 @@ struct ToDoItems: Identifiable {
         NavigationView {
             VStack {
                 List {
-                    VStack.init(alignment: .leading) {
                     ForEach($itemLists) { $items in
-                        Text(items.itemText)
-                        
                         Button {
                             items.isCompleted.toggle()
                         } label: {
-                                
+                            VStack.init(alignment: .leading) {
+                                Text(items.itemText)
                                 Text(items.isCompleted ? "Mark as not completed" : "Mark as completed")
                                     .padding(.horizontal, 14)
                                     .padding(.vertical, 6)
                                     .background(items.isCompleted ? .red : .green)
                                     .foregroundStyle(.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
+                            }
                         }.buttonStyle(.plain)
-                            .padding(6)
+                        .padding(6)
                     }.onDelete(perform: deleteItemText)
-                }
                 }
                 HStack {
                     TextField("Add something...", text: $itemAddText)
@@ -70,7 +68,6 @@ struct ToDoItems: Identifiable {
                     } label: {
                         Image(systemName: "plus.circle").font(.system(size: 24))
                     }
-
                 }.padding()
             }.navigationTitle("To-Do List")
         }
