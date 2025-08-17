@@ -28,7 +28,7 @@ struct ToDoItems: Identifiable {
             itemAddText = ""
         }
     }
-    
+    // This is function is swiping from right into left and it will show "Delete" is button.
     func deleteItemText(at offsets: IndexSet) {
         itemLists.remove(atOffsets: offsets)
     }
@@ -44,22 +44,24 @@ struct ToDoItems: Identifiable {
         NavigationView {
             VStack {
                 List {
+                    VStack.init(alignment: .leading) {
                     ForEach($itemLists) { $items in
-                        HStack {
-                            
-                            Button {
-                                items.isCompleted.toggle()
-                            } label: {
-                                Image(systemName: items.isCompleted ? "checkmark.circle.fill" : "checkmark.circle")
-                                    .foregroundStyle(items.isCompleted ? .green : .black)
-                                    .font(.system(size: 24))
-                                Text(items.itemText)
-                                    .bold(items.isCompleted)
-                            }.buttonStyle(.plain)
-
-                            
-                        }.padding(6)
+                        Text(items.itemText)
+                        
+                        Button {
+                            items.isCompleted.toggle()
+                        } label: {
+                                
+                                Text(items.isCompleted ? "Mark as not completed" : "Mark as completed")
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 6)
+                                    .background(items.isCompleted ? .red : .green)
+                                    .foregroundStyle(.white)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                        }.buttonStyle(.plain)
+                            .padding(6)
                     }.onDelete(perform: deleteItemText)
+                }
                 }
                 HStack {
                     TextField("Add something...", text: $itemAddText)
