@@ -7,31 +7,28 @@
 
 import SwiftUI
 
-
-
-struct ContentView: View {
-    
-    struct TodoDetailView: View {
-        let item: ToDoItems
-        var body: some View {
-            VStack(alignment: .leading, spacing: 20) {
-                Text(item.itemText)
-                    .font(.largeTitle)
-                Text("Status: \(item.isCompleted ? "Completed" : "Not Completed")")
-                    .font(.headline)
-                Spacer()
-            }
-            .padding()
-            .navigationTitle("Task Details")
-        }
-    }
-
-    
 struct ToDoItems: Identifiable {
     let id = UUID()
     var itemText = ""
     var isCompleted = false
 }
+
+struct TodoDetailView: View {
+    let item: ToDoItems
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text(item.itemText)
+                .font(.largeTitle)
+            Text("Status: \(item.isCompleted ? "Completed" : "Not Completed")")
+                .font(.headline)
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Task Details")
+    }
+}
+
+struct ContentView: View {
     @State private var itemLists: [ToDoItems] = [
         ToDoItems(itemText: "Learn Swift", isCompleted: true),
         ToDoItems(itemText: "Build new app 'To-Do List'", isCompleted: false),
@@ -40,6 +37,41 @@ struct ToDoItems: Identifiable {
     
     @State private var itemAddText: String = ""
     
+    
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                List {
+                    ForEach($itemLists) { $item in
+                        NavigationLink(destination: TodoDetailView(item: item)) {
+                            HStack {
+                                Button {
+                                    toggleCompletion(for: item)
+                                } label: {
+                                    Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "checkmark.circle")
+                                        .foregroundStyle(item.isCompleted ? .green : .black)
+                                }
+                                .buttonStyle(.plain)
+                                    Text(item.itemText)
+                                        .bold(item.isCompleted)
+                                }
+                                .font(.system(size: 20))
+                                .padding(.vertical, 10)
+                        }
+                    }.onDelete(perform: deleteItemText)
+                }
+                HStack {
+                    TextField("Add something...", text: $itemAddText)
+                    Button {
+                        addNewItemText()
+                    } label: {
+                        Image(systemName: "plus.circle").font(.system(size: 24))
+                    }
+                }.padding()
+            }.navigationTitle("To-Do List")
+        }
+    }
     func addNewItemText() {
         if !itemAddText.isEmpty {
             itemLists.insert(ToDoItems(itemText: itemAddText), at: itemLists.endIndex)
@@ -57,41 +89,9 @@ struct ToDoItems: Identifiable {
             itemLists[index].isCompleted.toggle()
         }
     }
-    
-    var body: some View {
-        NavigationView {
-            VStack {
-                List {
-                    ForEach($itemLists) { $items in
-                        
-                        NavigationLink(destination: TodoDetailView(item: items)) {
-                            VStack.init(alignment: .leading) {
-                                Text(items.itemText)
-                                Text(items.isCompleted ? "Mark as not completed" : "Mark as completed")
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(items.isCompleted ? .red : .green)
-                                    .foregroundStyle(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                                    .onTapGesture {
-                                        items.isCompleted.toggle()
-                                    }
-                            }
-                        }
-                    }.onDelete(perform: deleteItemText)
-                }
-                HStack {
-                    TextField("Add something...", text: $itemAddText)
-                    Button {
-                        addNewItemText()
-                    } label: {
-                        Image(systemName: "plus.circle").font(.system(size: 24))
-                    }
-                }.padding()
-            }.navigationTitle("To-Do List")
-        }
-    }
 }
+
+
 
 #Preview {
     ContentView()
